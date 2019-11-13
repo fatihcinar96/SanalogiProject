@@ -1,0 +1,119 @@
+﻿@{
+    ViewData["Title"] = "Fatura ekle";
+}
+
+<div id="app">
+    <div class="container" style="margin: 20px 20px;">
+        <form>
+            <p v-if="userError != ''" class="text-danger">
+                {{ userError }}
+            </p>
+            <!--Fatura ve kişi bilgileri başlangıcı-->
+            <div class="form-row col-md-12">
+                <div class="col-md-3 form-group">
+                    <label>Ad</label>
+                    <input type="text" placeholder="Adınızı giriniz." v-model="name" class="form-control input-sm">
+                    <label>Soyad</label>
+                    <input type="text" placeholder="Soyadınızı giriniz" v-model="surname" class="form-control input-sm">
+                </div>
+
+                <div class="col-md-3 form-group">
+                    <label>Telefon Numarası</label>
+                    <input type="tel" placeholder="Telefon" v-model="phone" class="form-control input-sm">
+                    <label>E-Mail Adresi</label>
+                    <input type="tel" placeholder="E-Mail" v-model="email" class="form-control input-sm">
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label>Fatura Tarihi</label>
+                    <input type="date" v-model="invoiceDate" class="form-control input-sm">
+                    <label>Fatura No</label>
+                    <input type="text" v-model="invoiceNo" class="form-control input-sm">
+                </div>
+
+            </div>
+
+
+            <div class="form-row col-md-12">
+                <div class="col-md-6">
+                    <label>Adres giriniz</label>
+                    <textarea placeholder="Adres" rows="4" v-model="address" class="form-control input-sm"></textarea>
+                </div>
+            </div>
+            <!--Fatura ve kişi bilgileri sonu-->
+
+            <div class="col-md-12" style="margin-top:20px;">
+                <p v-if="error != '' " class="text-danger">
+                    {{ error }}
+                </p>
+
+
+                <!--Ürün bilgileri başlangıcı-->
+                <div class="form-row">
+                    <div class="col-md-3 form-group">
+                        <label class="font-weight-bold">Ürün Adı</label>
+                        <input type="text" placeholder="Ürün adı" v-model="productName" class="form-control input-sm" id="productName">
+                    </div>
+
+                    <div class="col-md-2 form-group">
+                        <label class="font-weight-bold">Adet</label>
+                        <input type="number" min="0" placeholder="Adet" class="form-control input-sm text-right" v-model="productPiece" id="productPiece">
+                    </div>
+
+                    <div class="col-md-2 form-group">
+                        <label class="font-weight-bold">Birim Fiyat</label>
+                        <input type="number" min="0" class="form-control text-right input-sm" v-model="productUnitPrice" placeholder="Birim Fiyat" id="unitPrice">
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <input type="button" class="btn btn-warning" v-on:click="addProduct()" style="margin-top:30px" value="Ekle">
+                    </div>
+
+                </div>
+                <!--Ürün bilgileri sonu-->
+            </div>
+
+
+            <!--Eklenen ürünler tablosu başlangıcı-->
+            <table id="firstTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Ürün Adı</th>
+                        <th>Birim Fiyat</th>
+                        <th>Adet</th>
+                        <th>Toplam Fiyat</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr v-for="row in rows">
+                        <td>{{row.Name}}</td>
+                        <td>{{row.Piece}}</td>
+                        <td>{{row.UnitPrice}}</td>
+                        <td>{{row.TotalPrice}} ₺</td>
+                        <td><button class="btn btn-danger" type="button" v-bind:name="row.ID" v-on:click="deleteProduct(row.ID)">Sil</button></td>
+                    </tr>
+                    <tr v-if="productsTotalPrice != 0">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="bg-warning text-right">Genel Toplam : {{productsTotalPrice}} ₺</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!--Eklenen ürünler tablosu sonu-->
+            <!--Kayıt isteği karşılığı-->
+            <p v-if="subResponse == 'Kayıt başarılı!'" class="text-success">
+                {{ subResponse }}
+            </p>
+
+            <p v-else-if="subResponse.includes('Kayıt başarısız')" class="text-danger">
+                {{subResponse}}
+            </p>
+            <!--Kayıt isteği karşılığı sonu-->
+
+            <button :disabled="products.length==0" class="btn btn-primary" type="button" v-on:click="sub()">Kaydet</button>
+
+        </form>
+    </div>
+</div>
